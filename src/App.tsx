@@ -1,8 +1,8 @@
 import PixelArt from './pages/PixelArt';
-import ColorMemory from './pages/ColorMemory';
+import OrderMemory from './pages/OrderMemory';
 
 const App = () => {
-  return <ColorMemory />;
+  return <OrderMemory />;
 };
 
 export default App;
