@@ -5,5 +5,7 @@
 @layer base {
   * {
     @apply m-0;
+    @apply h-fit;
+    @apply w-fit;
   }
 }

@@ -51,10 +51,7 @@ const PixelArt = () => {
         <label htmlFor='pixelColorInput'>Cor: </label>
         <input id='pixelColorInput' type='color' value={pixelColor} onChange={changePixelColor} />
       </div>
-      <div
-        className='w-fit h-fit grid'
-        style={{ gridTemplateColumns: `repeat(${paintingSize}, 1fr)` }}
-      >
+      <div className='grid' style={{ gridTemplateColumns: `repeat(${paintingSize}, 1fr)` }}>
         {sizeArray.map((n) => (
           <Pixel key={n} size={pixelSize} color={pixelColor} />
         ))}
