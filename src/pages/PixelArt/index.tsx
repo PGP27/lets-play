@@ -49,7 +49,13 @@ const PixelArt = () => {
       </div>
       <div>
         <label htmlFor='pixelColorInput'>Cor: </label>
-        <input id='pixelColorInput' type='color' value={pixelColor} onChange={changePixelColor} />
+        <input
+          id='pixelColorInput'
+          type='color'
+          value={pixelColor}
+          className='h-6 w-6'
+          onChange={changePixelColor}
+        />
       </div>
       <div className='grid' style={{ gridTemplateColumns: `repeat(${paintingSize}, 1fr)` }}>
         {sizeArray.map((n) => (
