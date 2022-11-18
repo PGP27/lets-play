@@ -3,7 +3,9 @@ import { useEffect, useMemo, useState } from 'react';
 const AnimalsWordGame = () => {
   const [randomAnimals, setRandomAnimals] = useState<string[]>([]);
   const [animalsPosition, setAnimalsPosition] = useState<number[]>([]);
-  const [animalsFound, setAnimalsFound] = useState<string[]>([]);
+
+  let currentPosition = useMemo(() => 0, []);
+  let currentIndex = useMemo(() => 0, []);
 
   const animalsArray = useMemo(
     () => [
@@ -110,10 +112,6 @@ const AnimalsWordGame = () => {
 
     const animalsName = animals.map((a) => animalsArray[a]);
 
-    console.log(positions);
-
-    console.log(animalsName);
-
     const sortedAnimals: string[] = [];
     const sortedPositions: number[] = [];
 
@@ -129,14 +127,56 @@ const AnimalsWordGame = () => {
     setAnimalsPosition(sortedPositions);
   }, [animalsArray]);
 
-  return (
-    <div>
-      {sizeArray.map((n) => {
-        const randomLetter = Math.floor(Math.random() * lettersArray.length);
-        return <div key={n}></div>;
-      })}
-    </div>
-  );
+  console.log(randomAnimals);
+
+  console.log(animalsPosition);
+
+  if (randomAnimals && animalsPosition) {
+    const pos = currentPosition;
+    return (
+      <div className='grid grid-cols-[repeat(20,_1fr)]'>
+        {sizeArray.map((n) => {
+          if (
+            randomAnimals[currentPosition] !== undefined &&
+            animalsPosition[currentPosition] !== undefined &&
+            n >= animalsPosition[currentPosition] &&
+            n <= animalsPosition[currentPosition] + randomAnimals[currentPosition].length - 1
+          ) {
+            if (currentIndex < randomAnimals[currentPosition].length) {
+              currentIndex += 1;
+              return (
+                <button
+                  key={n}
+                  type='button'
+                  className='h-8 w-8 flex items-center justify-center border border-white cursor-default'
+                >
+                  {randomAnimals[currentPosition][currentIndex - 1]}
+                </button>
+              );
+            }
+          }
+          if (
+            randomAnimals[currentPosition] &&
+            currentIndex === randomAnimals[currentPosition].length
+          ) {
+            currentPosition += 1;
+            currentIndex = 0;
+          }
+          const randomLetter = Math.floor(Math.random() * lettersArray.length);
+          return (
+            <button
+              key={n}
+              type='button'
+              className='h-8 w-8 flex items-center justify-center border border-white cursor-default'
+            >
+              {lettersArray[randomLetter]}
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
+  return null;
 };
 
 export default AnimalsWordGame;
