@@ -1,79 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
+import { animalsArray, lettersArray } from './data';
 
 const AnimalsWordGame = () => {
-  const [randomAnimals, setRandomAnimals] = useState<string[]>([]);
-  const [animalsPosition, setAnimalsPosition] = useState<number[]>([]);
+  const [animals, setAnimals] = useState<string[]>([]);
+  const [animalsFound, setAnimalsFound] = useState<string[]>([]);
 
-  let currentPosition = useMemo(() => 0, []);
-  let currentIndex = useMemo(() => 0, []);
-
-  const animalsArray = useMemo(
-    () => [
-      'FORMIGA',
-      'GIRAFA',
-      'CAMELO',
-      'ELEFANTE',
-      'URSO',
-      'CORUJA',
-      'COBRA',
-      'CACHORRO',
-      'GATO',
-      'RATO',
-      'PERIQUITO',
-      'PAPAGAIO',
-      'FOCA',
-      'GUAXINIM',
-      'ORNITORRINCO',
-      'JAGUAR',
-      'GOLFINHO',
-      'OVELHA',
-      'COALA',
-      'COELHO',
-      'RAPOSA',
-      'MACACO',
-      'PEIXE',
-      'CANGURU',
-      'BALEIA',
-      'ZEBRA',
-      'CAVALO',
-      'ABELHA',
-      'PANTERA',
-      'CARACOL',
-    ],
-    [],
-  );
-
-  const lettersArray = useMemo(
-    () => [
-      'A',
-      'B',
-      'C',
-      'D',
-      'E',
-      'F',
-      'G',
-      'H',
-      'I',
-      'J',
-      'K',
-      'L',
-      'M',
-      'N',
-      'O',
-      'P',
-      'Q',
-      'R',
-      'S',
-      'T',
-      'U',
-      'V',
-      'W',
-      'X',
-      'Y',
-      'Z',
-    ],
-    [],
-  );
+  const animalsPositions: number[] = useMemo(() => [], []);
 
   const sizeArray = useMemo(() => {
     const arr = [];
@@ -83,100 +15,56 @@ const AnimalsWordGame = () => {
     return arr;
   }, []);
 
-  useEffect(() => {
-    const animals: number[] = [];
-
+  const raffleAnimals = () => {
+    const randomAnimals: string[] = [];
     for (let i = 0; i < 5; i += 1) {
-      const animal = Math.floor(Math.random() * (animalsArray.length - 1));
-      if (animals.includes(animal)) {
+      const animal = Math.floor(Math.random() * animalsArray.length);
+      if (randomAnimals.includes(animalsArray[animal])) {
         i -= 1;
       } else {
-        animals.push(animal);
+        randomAnimals.push(animalsArray[animal]);
       }
     }
+    return randomAnimals;
+  };
 
+  const rafflePositions = (aArray: string[]) => {
     const rows: number[] = [];
-    const positions: number[] = [];
-
-    for (let i = 0; i < animals.length; i += 1) {
+    const randomPositions: number[] = [];
+    for (let i = 0; i < 5; i += 1) {
       const row = Math.floor(Math.random() * 20);
-      const col = Math.floor(Math.random() * (20 - animalsArray[animals[i]].length));
-
       if (rows.includes(row)) {
         i -= 1;
       } else {
+        const col = Math.floor(Math.random() * (20 - aArray[i].length + 1));
         rows.push(row);
-        positions.push(20 * row + col);
+        randomPositions.push(20 * row + col);
       }
     }
+    return randomPositions;
+  };
 
-    const animalsName = animals.map((a) => animalsArray[a]);
-
-    const sortedAnimals: string[] = [];
-    const sortedPositions: number[] = [];
-
-    for (let i = 0; i < positions.length; i += 1) {
-      const min = Math.min(...positions);
-      const index = positions.indexOf(min);
-      sortedAnimals.push(animalsName[index]);
-      sortedPositions.push(positions[index]);
-      positions[index] = 999;
+  const sortAnimalsAndPositions = (aArray: string[], pArray: number[]) => {
+    const sortedAnimals = [];
+    for (let i = 0; i < pArray.length; i += 1) {
+      const min = Math.min(...pArray);
+      const index = pArray.indexOf(min);
+      animalsPositions.push(min);
+      sortedAnimals.push(aArray[index]);
+      pArray[index] = 999;
     }
 
-    setRandomAnimals(sortedAnimals);
-    setAnimalsPosition(sortedPositions);
-  }, [animalsArray]);
+    setAnimals(sortedAnimals);
+  };
 
-  console.log(randomAnimals);
+  useEffect(() => {
+    const randomAnimals = raffleAnimals();
+    const randomPositions = rafflePositions(randomAnimals);
+    sortAnimalsAndPositions(randomAnimals, randomPositions);
+  }, []);
 
-  console.log(animalsPosition);
-
-  if (randomAnimals && animalsPosition) {
-    const pos = currentPosition;
-    return (
-      <div className='grid grid-cols-[repeat(20,_1fr)]'>
-        {sizeArray.map((n) => {
-          if (
-            randomAnimals[currentPosition] !== undefined &&
-            animalsPosition[currentPosition] !== undefined &&
-            n >= animalsPosition[currentPosition] &&
-            n <= animalsPosition[currentPosition] + randomAnimals[currentPosition].length - 1
-          ) {
-            if (currentIndex < randomAnimals[currentPosition].length) {
-              currentIndex += 1;
-              return (
-                <button
-                  key={n}
-                  type='button'
-                  className='h-8 w-8 flex items-center justify-center border border-white cursor-default'
-                >
-                  {randomAnimals[currentPosition][currentIndex - 1]}
-                </button>
-              );
-            }
-          }
-          if (
-            randomAnimals[currentPosition] &&
-            currentIndex === randomAnimals[currentPosition].length
-          ) {
-            currentPosition += 1;
-            currentIndex = 0;
-          }
-          const randomLetter = Math.floor(Math.random() * lettersArray.length);
-          return (
-            <button
-              key={n}
-              type='button'
-              className='h-8 w-8 flex items-center justify-center border border-white cursor-default'
-            >
-              {lettersArray[randomLetter]}
-            </button>
-          );
-        })}
-      </div>
-    );
-  }
-  return null;
+  console.log(animals);
+  console.log(animalsPositions);
 };
 
 export default AnimalsWordGame;
