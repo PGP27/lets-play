@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { animalsArray, lettersArray } from './data';
+import { animalsArray, lettersArray } from '../../data';
 
 const AnimalsWordGame = () => {
   const [animals, setAnimals] = useState<string[]>([]);
