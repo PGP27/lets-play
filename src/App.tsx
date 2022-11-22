@@ -3,7 +3,7 @@ import AnimalsWordGame from './pages/AnimalsWordGame';
 import Hangman from './pages/Hangman';
 
 const App = () => {
-  return <Hangman />;
+  return <AnimalsWordGame />;
 };
 
 export default App;
